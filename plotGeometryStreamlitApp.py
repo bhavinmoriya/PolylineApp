@@ -1,7 +1,8 @@
 import streamlit as st
 import folium
 import polyline
-from streamlit_folium import folium_static
+# from streamlit_folium import folium_static
+from streamlit_folium import st_folium  # <-- updated import
 
 
 # Default encoded polyline
@@ -35,7 +36,8 @@ def main():
                 decoded_coordinates = decode_polyline(encoded_polyline)
                 m = plot_trajectory(decoded_coordinates)
                 st.write("Trajectory Map:")
-                folium_static(m)
+                # folium_static(m)
+                st_folium(m, width=800, height=600)  # <-- updated call
             except Exception as e:
                 st.error(f"Error decoding polyline: {e}")
 
@@ -55,7 +57,8 @@ def main():
                 if isinstance(decoded_coordinates, list):
                     m = plot_trajectory(decoded_coordinates)
                     st.write("Trajectory Map:")
-                    folium_static(m)
+                    # folium_static(m)
+                    st_folium(m, width=800, height=600)  # <-- updated call
                 else:
                     st.error(
                         "Invalid input format. Please provide a list of coordinates."
