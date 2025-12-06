@@ -19,6 +19,7 @@ def decode_polyline(encoded_polyline):
 
 
 def main():
+    st.set_page_config(page_title="Trajectory Plotter")  # Unique browser tab title
     st.title("Trajectory Plotter")
 
     # User input for encoded or decoded geometry
