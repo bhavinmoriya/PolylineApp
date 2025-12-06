@@ -1,6 +1,7 @@
 import streamlit as st
 import folium
 import polyline
+from streamlit_folium import st_folium  # <-- updated import
 
 
 def plot_trajectory(coordinates):
@@ -17,6 +18,8 @@ def decode_polyline(encoded_polyline):
     # Decode the polyline
     return polyline.decode(encoded_polyline)
 
+# Default encoded polyline
+DEFAULT_ENCODED = "wquhH_xnw@qAjC}DbJuBdEkDrFeBrBu@p@wGxEqHnEiD~BqMjJcHlFmBlA}IxE{M~JiOdLcBbBo@x@oApBmB|DiKtV}@hCe@vBU~AaC`SoBxN{BvSk@|GwBlRyAjMMhBElCBhCLnB`@fF^vCvAxHjChHt@dBvMv^lBjE|FvK|HnP|Rdf@vEjMpB`E~BjDvBlCrDxDrJbJjBvBxC~DjD~CxChCfE|CbFvE~F`GnCxC~ErGpEnF~H`JfAxA|BrEb@tAxDjT~C|PjIng@pCzPb@zEhBxLtCxMxThw@hRlp@vMvc@xi@|lBlB~DrFdGrFhBzAPjABhBIvAQdGuAfBy@`BcA~BkBbEiEfCaDtDgFfB{DrEgNxAiDxMiR|DuFlB}BjAgA|BkAdA["
 
 def main():
     st.set_page_config(page_title="Trajectory Plotter")  # Unique browser tab title
@@ -26,7 +29,9 @@ def main():
     geometry_type = st.radio("Select Geometry Type:", ("Encoded", "Decoded"))
 
     if geometry_type == "Encoded":
-        encoded_polyline = st.text_input("Enter Encoded Polyline:")
+        encoded_polyline = st.text_input("Enter Encoded Polyline:",
+        value=DEFAULT_ENCODED,  # Set default here
+        )
         if st.button("Plot"):
             if encoded_polyline:
                 try:
@@ -42,14 +47,18 @@ def main():
         st.write(
             "Enter Decoded Coordinates (as a list of [latitude, longitude] pairs):"
         )
-        decoded_input = st.text_area("Example: [[lat1, lon1], [lat2, lon2], ...]")
+        decoded_input = st.text_area("Example: [[lat1, lon1], [lat2, lon2], ...]",
+        value=polyline.decode(DEFAULT_ENCODED),
+        )
         if st.button("Plot"):
             try:
                 decoded_coordinates = eval(decoded_input)
                 if isinstance(decoded_coordinates, list):
                     m = plot_trajectory(decoded_coordinates)
                     st.write("Trajectory Map:")
-                    folium_static(m)
+                    # folium_static(m)
+                    st_folium(m, width=800, height=600)  # <-- updated call
+                    
                 else:
                     st.error(
                         "Invalid input format. Please provide a list of coordinates."
